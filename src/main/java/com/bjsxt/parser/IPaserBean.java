@@ -15,7 +15,7 @@ public interface IPaserBean
     //是否有二级URL，如果返回true，就会调用SecondaryUrl来获取二级Url，并从二级Url下载的页面上运行getData
     public boolean hasSecondaryUrl();
     public String[] SecondaryUrls(Document html);
-    public Map<String, String> getData(Document html);
+    public List<Map<String, String>> getData(Document html);
     //返回数据的名字，必须与getData返回map的key对应
     public String[] getDataNames();
 

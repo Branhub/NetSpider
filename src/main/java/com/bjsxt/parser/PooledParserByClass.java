@@ -7,6 +7,7 @@ import com.bjsxt.utils.LeveledURL;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -28,13 +29,13 @@ public class PooledParserByClass implements Runnable
 
     private BoundedBuffer<LeveledPage> downloadResults;
     private BlockingQueue<Future<LeveledURL>> targetURLs;
-    private BlockingQueue<Future<Map<String,String>>> dataParsed;
+    private BlockingQueue<Future<List<Map<String, String>>>> dataParsed;
 
     private boolean isFinished = false;
 
     public PooledParserByClass(BoundedBuffer<LeveledPage> downloadResults,
                                BlockingQueue<Future<LeveledURL>> targetURLs,
-                               BlockingQueue<Future<Map<String,String>>> dataParsed,
+                               BlockingQueue<Future<List<Map<String, String>>>> dataParsed,
                                IPaserBean iPaserBean) throws Exception
     {
         this.downloadResults = downloadResults;
@@ -69,10 +70,10 @@ public class PooledParserByClass implements Runnable
                     if (paserBean.hasSecondaryUrl() && leveledPage.getLevel() == 2)
                     {
                         //从二级URL中获取数据
-                        Future<Map<String, String>> data = parserPool.submit(new Callable<Map<String, String>>()
+                        Future<List<Map<String, String>>> data = parserPool.submit(new Callable<List<Map<String, String>>>()
                         {
                             @Override
-                            public Map<String, String> call() throws Exception
+                            public List<Map<String, String>> call() throws Exception
                             {
                                 Document document = Jsoup.parse(leveledPage.getHtml(), leveledPage.getUri().toString());
                                 return paserBean.getData(document);
@@ -80,7 +81,7 @@ public class PooledParserByClass implements Runnable
                         });
                         dataParsed.add(data);
                     }
-                    else
+                    else if (paserBean.hasSecondaryUrl() && leveledPage.getLevel() == 1)
                     {
                         //从一级URL中获取二级URL
                         final Document document = Jsoup.parse(leveledPage.getHtml(), leveledPage.getUri().toString());
@@ -124,6 +125,19 @@ public class PooledParserByClass implements Runnable
                             }
                         });
                         targetURLs.add(nextPage);
+                    }
+                    else if (!paserBean.hasSecondaryUrl())
+                    {
+                        Future<List<Map<String, String>>> data = parserPool.submit(new Callable<List<Map<String, String>>>()
+                        {
+                            @Override
+                            public List<Map<String, String>> call() throws Exception
+                            {
+                                Document document = Jsoup.parse(leveledPage.getHtml(), leveledPage.getUri().toString());
+                                return paserBean.getData(document);
+                            }
+                        });
+                        dataParsed.add(data);
                     }
                 }
                 catch (ExecutionException e)

@@ -5,10 +5,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PaserBean implements IPaserBean
 {
@@ -45,14 +42,16 @@ public class PaserBean implements IPaserBean
         }
         return result;
     }
-    public Map<String, String> getData(Document html)
+    public List<Map<String, String>> getData(Document html)
     {
         Map<String,String> data = new HashMap<>();
         //data.put("title",html.select("#title>a:first-child").html());
         data.put("title",html.select("#title").html());
         //System.out.println(data.get("title"));
         data.put("magnet",html.select("div.download>a:first-child").attr("href"));
-        return data;
+        List<Map<String,String>> resultList = new ArrayList<>();
+        resultList.add(data);
+        return resultList;
     }
 
     @Override

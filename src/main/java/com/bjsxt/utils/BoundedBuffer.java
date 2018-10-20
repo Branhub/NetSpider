@@ -66,7 +66,7 @@ public class BoundedBuffer<T>
         }
     }
 
-    public Future<T> pop()
+    public Future<T> pop() throws InterruptedException
     {
         try
         {
@@ -102,9 +102,11 @@ public class BoundedBuffer<T>
         catch (InterruptedException e)
         {
             //TODO 记录日志
-            e.printStackTrace();
+            //e.printStackTrace();
+            System.out.println("BoundedBuffer Interrupted");
             Thread.currentThread().interrupt();
-            return null;
+            throw e;
+            //return null;
         }
         finally
         {

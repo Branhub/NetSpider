@@ -11,6 +11,7 @@ import com.bjsxt.utils.BoundedBuffer;
 import com.bjsxt.utils.LeveledPage;
 import com.bjsxt.utils.LeveledURL;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
@@ -20,9 +21,10 @@ public class Engine
 {
     private static final BoundedBuffer<LeveledPage> downloadResults = new BoundedBuffer();
     private static final BlockingQueue<Future<LeveledURL>> targetURLs = new LinkedBlockingQueue<>();
-    private static final BlockingQueue<Future<Map<String,String>>> dataParsed = new LinkedBlockingQueue<>();
+    private static final BlockingQueue<Future<List<Map<String,String>>>> dataParsed = new LinkedBlockingQueue<>();
     //TODO 从文件中读取类名
-    private static final String IPaserBeanClassName = "com.bjsxt.parser.PaserBean";
+    //private static final String IPaserBeanClassName = "com.bjsxt.parser.PaserBean";
+    private static final String IPaserBeanClassName = "com.bjsxt.parser.StackOverflowPaserBean";
     private final IPaserBean iPaserBean;
 
     private final PooledDownloader pooledDownloader;

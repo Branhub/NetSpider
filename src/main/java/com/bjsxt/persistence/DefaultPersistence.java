@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
@@ -17,7 +18,7 @@ import java.util.concurrent.Future;
 public class DefaultPersistence implements IPersistence,Runnable
 {
 
-    private BlockingQueue<Future<Map<String,String>>> dataParsed;
+    private BlockingQueue<Future<List<Map<String,String>>>> dataParsed;
     private boolean isFinished = false;
 
     private IPaserBean paserBean;
@@ -29,7 +30,7 @@ public class DefaultPersistence implements IPersistence,Runnable
 
     private int persistedCount = 0;
 
-    public DefaultPersistence(BlockingQueue<Future<Map<String,String>>> dataParsed,
+    public DefaultPersistence(BlockingQueue<Future<List<Map<String,String>>>> dataParsed,
                               IPaserBean paserBean) throws IOException
     {
         this.dataParsed = dataParsed;
@@ -75,14 +76,21 @@ public class DefaultPersistence implements IPersistence,Runnable
             {
                 try
                 {
-                    Map<String, String> parseResult = dataParsed.take().get();
+                    List<Map<String, String>> parseResult = dataParsed.take().get();
                     System.out.println(parseResult);
-                    for (int i = 0;i < dataNames.length;i++)
+                    for (int i = 0;i < parseResult.size();i++)
                     {
-                        csvPrinter.print(parseResult.get(dataNames[i]));
+                        for (int j = 0; j < dataNames.length; j++)
+                        {
+                            csvPrinter.print(parseResult.get(i).get(dataNames[j]));
+                        }
+                        csvPrinter.println();
+                        persistedCount = persistedCount + 1;
+                        if (persistedCount >= paserBean.getStopDataCount())
+                        {
+                            break;
+                        }
                     }
-                    csvPrinter.println();
-                    persistedCount = persistedCount + 1;
                 }
                 catch (InterruptedException e)
                 {
