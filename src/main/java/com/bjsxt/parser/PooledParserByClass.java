@@ -24,7 +24,7 @@ public class PooledParserByClass implements Runnable
     });
 
     //TODO 从文件中读取类名
-    //private String IPaserBeanClassName = "PaserBean";
+    //private String IPaserBeanClassName = "PiratebayPaserBean";
     private IPaserBean paserBean;
 
     private BoundedBuffer<LeveledPage> downloadResults;

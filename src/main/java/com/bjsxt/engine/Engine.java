@@ -3,7 +3,6 @@ package com.bjsxt.engine;
 import com.bjsxt.connection.PooledHttpClient;
 import com.bjsxt.downloader.PooledDownloader;
 import com.bjsxt.parser.IPaserBean;
-import com.bjsxt.parser.PaserBean;
 import com.bjsxt.parser.PooledParserByClass;
 import com.bjsxt.persistence.DefaultPersistence;
 import com.bjsxt.persistence.IPersistence;
@@ -23,8 +22,8 @@ public class Engine
     private static final BlockingQueue<Future<LeveledURL>> targetURLs = new LinkedBlockingQueue<>();
     private static final BlockingQueue<Future<List<Map<String,String>>>> dataParsed = new LinkedBlockingQueue<>();
     //TODO 从文件中读取类名
-    //private static final String IPaserBeanClassName = "com.bjsxt.parser.PaserBean";
-    private static final String IPaserBeanClassName = "com.bjsxt.parser.StackOverflowPaserBean";
+    private static final String IPaserBeanClassName = "com.bjsxt.parser.PiratebayPaserBean";
+    //private static final String IPaserBeanClassName = "com.bjsxt.parser.StackOverflowPaserBean";
     private final IPaserBean iPaserBean;
 
     private final PooledDownloader pooledDownloader;

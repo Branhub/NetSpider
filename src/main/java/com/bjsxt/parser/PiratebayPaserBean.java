@@ -7,7 +7,7 @@ import org.jsoup.select.Elements;
 import java.net.URI;
 import java.util.*;
 
-public class PaserBean implements IPaserBean
+public class PiratebayPaserBean implements IPaserBean
 {
     @Override
     public String getStartURL()
